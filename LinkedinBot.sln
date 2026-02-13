@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkedinBot.Infra", "Linked
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkedinBot.Application", "LinkedinBot.Application\LinkedinBot.Application.csproj", "{15F17318-9647-4BBB-B826-5FC91AF2C70B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkedinBot.Worker", "LinkedinBot.Worker\LinkedinBot.Worker.csproj", "{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{15F17318-9647-4BBB-B826-5FC91AF2C70B}.Release|x64.Build.0 = Release|Any CPU
 		{15F17318-9647-4BBB-B826-5FC91AF2C70B}.Release|x86.ActiveCfg = Release|Any CPU
 		{15F17318-9647-4BBB-B826-5FC91AF2C70B}.Release|x86.Build.0 = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|x64.Build.0 = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Debug|x86.Build.0 = Debug|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|x64.ActiveCfg = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|x64.Build.0 = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|x86.ActiveCfg = Release|Any CPU
+		{EDBBC20D-3460-4032-AAA8-5E403E7E5DC7}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -345,6 +345,67 @@ dotnet run --project LinkedinBot.Console
 
 ---
 
+## 🐳 Docker
+
+The project includes two Docker targets: a **Worker** (BackgroundService, headless, Postgres) and the **Console** (interactive prompt).
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Worker (recommended for Docker)
+
+The Worker runs as a BackgroundService with Postgres for job history persistence. Unrecognized form elements are automatically skipped (no interactive prompt).
+
+#### 1. Configure
+
+```bash
+cp LinkedinBot.Worker/appsettings.example.json LinkedinBot.Worker/appsettings.json
+cp LinkedinBot.Console/resume.example.md LinkedinBot.Worker/resume.md
+```
+
+Edit both files with your credentials and resume.
+
+#### 2. Build and run
+
+```bash
+docker compose up --build
+```
+
+This starts Postgres + Worker. The Worker auto-applies database migrations on startup.
+
+#### 3. Stop
+
+```bash
+docker compose down
+```
+
+### Console (optional, for local dev)
+
+```bash
+docker compose --profile console up linkedinbot --build
+```
+
+### Environment variable overrides
+
+```yaml
+environment:
+  - JobSearch__Keywords=React AND TypeScript
+  - JobSearch__MaxApplicationsPerRun=10
+  - OpenAI__Model=gpt-4o-mini
+  - ConnectionStrings__JobHistory=Host=postgres;Database=linkedinbot;...
+```
+
+### Persistent data
+
+| Volume | Purpose |
+|--------|---------|
+| `postgres-data` | PostgreSQL database (job history) |
+| `worker-userdata` | Browser session data (login persistence) |
+| `worker-logs` | Daily rolling log files |
+
+---
+
 ## 🔄 How It Works
 
 ### Application Flow

@@ -14,7 +14,11 @@
       "Bash(dotnet sln:*)",
       "Bash(taskkill:*)",
       "Skill(readme-generator)",
-      "Skill(readme-generator:*)"
+      "Skill(readme-generator:*)",
+      "Bash(dotnet new:*)",
+      "Bash(dotnet tool list:*)",
+      "Bash(dotnet ef migrations add:*)",
+      "Bash(dotnet add:*)"
     ]
   }
 }

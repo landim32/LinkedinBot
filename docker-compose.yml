@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: linkedinbot-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: linkedinbot
+      POSTGRES_USER: linkedinbot
+      POSTGRES_PASSWORD: linkedinbot
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linkedinbot"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      args:
+        PROJECT: LinkedinBot.Worker
+    container_name: linkedinbot-worker
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./LinkedinBot.Worker/appsettings.json:/app/appsettings.json:ro
+      - ./LinkedinBot.Worker/resume.md:/app/resume.md:ro
+      - worker-userdata:/app/user-data
+      - worker-logs:/app/logs
+    environment:
+      - Browser__Headless=true
+      - Browser__Channel=chromium
+      - ConnectionStrings__JobHistory=Host=postgres;Database=linkedinbot;Username=linkedinbot;Password=linkedinbot
+      - JobHistory__Provider=postgres
+      - JobSearch__InteractivePrompt=false
+
+  # Console service (for local development with interactive prompt)
+  linkedinbot:
+    build:
+      context: .
+      args:
+        PROJECT: LinkedinBot.Console
+    container_name: linkedinbot-console
+    stdin_open: true
+    tty: true
+    profiles:
+      - console
+    volumes:
+      - ./LinkedinBot.Console/appsettings.json:/app/appsettings.json:ro
+      - ./LinkedinBot.Console/resume.md:/app/resume.md:ro
+      - console-userdata:/app/user-data
+      - console-logs:/app/logs
+      - ./job-history.json:/app/job-history.json
+    environment:
+      - Browser__Headless=true
+      - Browser__Channel=chromium
+
+volumes:
+  postgres-data:
+  worker-userdata:
+  worker-logs:
+  console-userdata:
+  console-logs:

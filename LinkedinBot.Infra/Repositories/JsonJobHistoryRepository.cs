@@ -4,19 +4,19 @@ using LinkedinBot.Infra.Interfaces.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace LinkedinBot.Infra.Services;
+namespace LinkedinBot.Infra.Repositories;
 
-public class JobHistoryService : IJobHistoryService
+public class JsonJobHistoryRepository : IJobHistoryService
 {
     private readonly string _filePath;
-    private readonly ILogger<JobHistoryService> _logger;
+    private readonly ILogger<JsonJobHistoryRepository> _logger;
     private readonly SemaphoreSlim _lock = new(1, 1);
     private readonly HashSet<string> _analyzedUrls = new(StringComparer.OrdinalIgnoreCase);
     private List<JobHistoryEntry> _history = [];
 
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
-    public JobHistoryService(IOptions<JobSearchSettings> settings, ILogger<JobHistoryService> logger)
+    public JsonJobHistoryRepository(IOptions<JobSearchSettings> settings, ILogger<JsonJobHistoryRepository> logger)
     {
         _filePath = Path.GetFullPath(settings.Value.HistoryFilePath);
         _logger = logger;

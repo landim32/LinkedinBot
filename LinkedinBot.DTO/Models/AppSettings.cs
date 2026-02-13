@@ -31,6 +31,7 @@ public class JobSearchSettings
     public string HistoryFilePath { get; set; } = "./job-history.json";
     public int SalaryExpectation { get; set; } = 15000;
     public int MaxFormSteps { get; set; } = 20;
+    public bool InteractivePrompt { get; set; } = true;
 }
 
 public class BrowserSettings
@@ -42,6 +43,13 @@ public class BrowserSettings
     public int SlowMo { get; set; } = 500;
     public string UserDataDir { get; set; } = "./user-data";
     public string Channel { get; set; } = "chrome";
+}
+
+public class JobHistorySettings
+{
+    public const string SectionName = "JobHistory";
+
+    public string Provider { get; set; } = "json";
 }
 
 public class ResumeSettings

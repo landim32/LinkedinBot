@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LinkedinBot.Application;
 using LinkedinBot.Domain.Services.Interfaces;
 using LinkedinBot.DTO.Models;
@@ -131,7 +132,7 @@ try
                         sessionResults.Add(result);
                         Log.Information("Skipped (incompatible): {Reason}", compatibility.Reasoning);
 
-                        await historyService.SaveJobResultAsync(ToHistoryEntry(job, result));
+                        await historyService.SaveJobResultAsync(ToHistoryEntry(job, result, compatibility));
                         await searchService.DismissJobAsync(page, job.JobUrl);
                         continue;
                     }
@@ -148,7 +149,7 @@ try
                         cycleResults.Add(result);
                         sessionResults.Add(result);
 
-                        await historyService.SaveJobResultAsync(ToHistoryEntry(job, result));
+                        await historyService.SaveJobResultAsync(ToHistoryEntry(job, result, compatibility));
                         continue;
                     }
 
@@ -161,7 +162,9 @@ try
 
                     await Task.Delay(Random.Shared.Next(2000, 4000), cts.Token);
 
-                    var success = await applyService.ApplyToJobAsync(page, job, PromptUserToContinue);
+                    Func<int, bool>? onUnrecognized = settings.InteractivePrompt
+                        ? PromptUserToContinue : null;
+                    var success = await applyService.ApplyToJobAsync(page, job, onUnrecognized);
 
                     var appResult = new ApplicationResult
                     {
@@ -173,7 +176,7 @@ try
                     cycleResults.Add(appResult);
                     sessionResults.Add(appResult);
 
-                    await historyService.SaveJobResultAsync(ToHistoryEntry(job, appResult));
+                    await historyService.SaveJobResultAsync(ToHistoryEntry(job, appResult, compatibility));
 
                     if (success)
                     {
@@ -283,7 +286,8 @@ static void PrintSessionSummary(List<ApplicationResult> results, DateTime starte
     }
 }
 
-static JobHistoryEntry ToHistoryEntry(JobListing job, ApplicationResult result)
+static JobHistoryEntry ToHistoryEntry(
+    JobListing job, ApplicationResult result, CompatibilityResult? compatibility = null)
 {
     return new JobHistoryEntry
     {
@@ -291,8 +295,15 @@ static JobHistoryEntry ToHistoryEntry(JobListing job, ApplicationResult result)
         Title = job.Title,
         Company = job.Company,
         Location = job.Location,
+        Description = job.Description,
         Status = result.Status.ToString(),
         Reason = result.Reason,
+        ConfidenceScore = compatibility?.ConfidenceScore,
+        AiMessage = compatibility?.Reasoning,
+        KeyMatchingSkills = compatibility?.KeyMatchingSkills is { Count: > 0 }
+            ? JsonSerializer.Serialize(compatibility.KeyMatchingSkills) : null,
+        MissingRequirements = compatibility?.MissingRequirements is { Count: > 0 }
+            ? JsonSerializer.Serialize(compatibility.MissingRequirements) : null,
         AnalyzedAt = DateTime.UtcNow,
         AppliedAt = result.AppliedAt
     };
