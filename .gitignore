@@ -1,0 +1,39 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Visual Studio
+.vs/
+
+## User-specific
+*.rsuser
+*.userprefs
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+## NuGet
+**/[Pp]ackages/*
+*.nupkg
+**/packages/
+
+## Secrets and local overrides
+appsettings.Development.json
+**/appsettings.json
+**/resume.md
+
+## Job history
+job-history.json
+
+## Playwright persistent browser data
+user-data/
+
+## Logs
+logs/
