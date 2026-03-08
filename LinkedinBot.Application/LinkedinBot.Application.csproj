@@ -12,10 +12,14 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LinkedinBot.Infra\LinkedinBot.Infra.csproj" />
+    <ProjectReference Include="..\LinkedinBot.Infra.Json\LinkedinBot.Infra.Json.csproj" />
+    <ProjectReference Include="..\LinkedinBot.Infra.Postgres\LinkedinBot.Infra.Postgres.csproj" />
+    <ProjectReference Include="..\LinkedinBot.Infra.Sqlite\LinkedinBot.Infra.Sqlite.csproj" />
     <ProjectReference Include="..\LinkedinBot.Infra.Interfaces\LinkedinBot.Infra.Interfaces.csproj" />
     <ProjectReference Include="..\LinkedinBot.Domain\LinkedinBot.Domain.csproj" />
     <ProjectReference Include="..\LinkedinBot.DTO\LinkedinBot.DTO.csproj" />

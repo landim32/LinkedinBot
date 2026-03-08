@@ -18,7 +18,8 @@
       "Bash(dotnet new:*)",
       "Bash(dotnet tool list:*)",
       "Bash(dotnet ef migrations add:*)",
-      "Bash(dotnet add:*)"
+      "Bash(dotnet add:*)",
+      "Bash(rm:*)"
     ]
   }
 }

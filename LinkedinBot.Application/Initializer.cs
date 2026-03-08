@@ -1,10 +1,13 @@
 using LinkedinBot.Domain.Services;
 using LinkedinBot.Domain.Services.Interfaces;
 using LinkedinBot.DTO.Models;
-using LinkedinBot.Infra.Data;
-using LinkedinBot.Infra.Interfaces.Services;
-using LinkedinBot.Infra.Repositories;
-using LinkedinBot.Infra.Services;
+using LinkedinBot.Infra.Interfaces.AppServices;
+using LinkedinBot.Infra.Json.Repositories;
+using LinkedinBot.Infra.Postgres.Data;
+using LinkedinBot.Infra.Postgres.Repositories;
+using LinkedinBot.Infra.AppServices;
+using LinkedinBot.Infra.Sqlite.Data;
+using LinkedinBot.Infra.Sqlite.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,28 +25,40 @@ public static class Initializer
         services.Configure<JobSearchSettings>(configuration.GetSection(JobSearchSettings.SectionName));
         services.Configure<BrowserSettings>(configuration.GetSection(BrowserSettings.SectionName));
         services.Configure<ResumeSettings>(configuration.GetSection(ResumeSettings.SectionName));
+        services.Configure<DataConnectionSettings>(configuration.GetSection(DataConnectionSettings.SectionName));
 
         // Job history repository (config-based selection)
-        var provider = configuration.GetValue<string>("JobHistory:Provider") ?? "json";
-        if (provider.Equals("postgres", StringComparison.OrdinalIgnoreCase))
+        var jobHistorySection = configuration.GetSection(DataConnectionSettings.SectionName);
+        var provider = jobHistorySection.GetValue<string>(nameof(DataConnectionSettings.Provider)) ?? "json";
+        var connectionString = jobHistorySection.GetValue<string>(nameof(DataConnectionSettings.ConnectionString)) ?? string.Empty;
+
+        switch (provider.ToLowerInvariant())
         {
-            var connectionString = configuration.GetConnectionString("JobHistory")
-                ?? throw new InvalidOperationException(
-                    "ConnectionStrings:JobHistory is required when using Postgres provider.");
-            services.AddDbContext<JobHistoryDbContext>(options => options.UseNpgsql(connectionString));
-            services.AddScoped<IJobHistoryService, PostgresJobHistoryRepository>();
-        }
-        else
-        {
-            services.AddSingleton<IJobHistoryService, JsonJobHistoryRepository>();
+            case "postgres":
+                if (string.IsNullOrEmpty(connectionString))
+                    throw new InvalidOperationException("DataConnection:ConnectionString is required when using Postgres provider.");
+                services.AddDbContext<JobHistoryDbContext>(options => options.UseNpgsql(connectionString));
+                services.AddScoped<IJobHistoryAppService, PostgresJobHistoryRepository>();
+                break;
+
+            case "sqlite":
+                if (string.IsNullOrEmpty(connectionString))
+                    connectionString = "Data Source=job-history.db";
+                services.AddDbContext<SqliteJobHistoryDbContext>(options => options.UseSqlite(connectionString));
+                services.AddScoped<IJobHistoryAppService, SqliteJobHistoryRepository>();
+                break;
+
+            default: // json
+                services.AddSingleton<IJobHistoryAppService, JsonJobHistoryRepository>();
+                break;
         }
 
         // Infrastructure services
-        services.AddSingleton<IChatGptService, ChatGptService>();
-        services.AddSingleton<IBrowserService, BrowserService>();
-        services.AddTransient<ILinkedInAuthService, LinkedInAuthService>();
-        services.AddTransient<ILinkedInSearchService, LinkedInSearchService>();
-        services.AddTransient<ILinkedInApplyService, LinkedInApplyService>();
+        services.AddSingleton<IChatGptService, ChatGptAppService>();
+        services.AddSingleton<IBrowserAppService, BrowserAppService>();
+        services.AddTransient<ILinkedInAuthAppService, LinkedInAuthAppService>();
+        services.AddTransient<ILinkedInSearchAppService, LinkedInSearchAppService>();
+        services.AddTransient<ILinkedInApplyAppService, LinkedInApplyAppService>();
 
         // Domain services
         services.AddTransient<IJobAnalyzerService, JobAnalyzerService>();

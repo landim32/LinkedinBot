@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LinkedinBot.Domain\LinkedinBot.Domain.csproj" />
     <ProjectReference Include="..\LinkedinBot.DTO\LinkedinBot.DTO.csproj" />
   </ItemGroup>
 

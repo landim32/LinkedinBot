@@ -1,7 +1,7 @@
 using System.Text.Json;
 using LinkedinBot.Domain.Services.Interfaces;
 using LinkedinBot.DTO.Models;
-using LinkedinBot.Infra.Interfaces.Services;
+using LinkedinBot.Infra.Interfaces.AppServices;
 using Microsoft.Extensions.Options;
 using Microsoft.Playwright;
 
@@ -25,7 +25,7 @@ public class LinkedInBotWorker : BackgroundService
         _logger.LogInformation("=== LinkedIn Easy Apply Worker Starting ===");
 
         // Singleton services — resolved once
-        var browserService = _serviceProvider.GetRequiredService<IBrowserService>();
+        var browserService = _serviceProvider.GetRequiredService<IBrowserAppService>();
         var settings = _serviceProvider.GetRequiredService<IOptions<JobSearchSettings>>().Value;
 
         await browserService.InitializeAsync();
@@ -34,14 +34,14 @@ public class LinkedInBotWorker : BackgroundService
         // Initial load of history (first scope)
         using (var initScope = _serviceProvider.CreateScope())
         {
-            var historyService = initScope.ServiceProvider.GetRequiredService<IJobHistoryService>();
+            var historyService = initScope.ServiceProvider.GetRequiredService<IJobHistoryAppService>();
             await historyService.LoadAsync();
         }
 
         // Ensure logged in
         using (var authScope = _serviceProvider.CreateScope())
         {
-            var authService = authScope.ServiceProvider.GetRequiredService<ILinkedInAuthService>();
+            var authService = authScope.ServiceProvider.GetRequiredService<ILinkedInAuthAppService>();
             await authService.EnsureLoggedInAsync(page);
         }
 
@@ -60,11 +60,11 @@ public class LinkedInBotWorker : BackgroundService
                 using var scope = _serviceProvider.CreateScope();
                 var provider = scope.ServiceProvider;
 
-                var authService = provider.GetRequiredService<ILinkedInAuthService>();
-                var searchService = provider.GetRequiredService<ILinkedInSearchService>();
-                var applyService = provider.GetRequiredService<ILinkedInApplyService>();
+                var authService = provider.GetRequiredService<ILinkedInAuthAppService>();
+                var searchService = provider.GetRequiredService<ILinkedInSearchAppService>();
+                var applyService = provider.GetRequiredService<ILinkedInApplyAppService>();
                 var analyzerService = provider.GetRequiredService<IJobAnalyzerService>();
-                var historyService = provider.GetRequiredService<IJobHistoryService>();
+                var historyService = provider.GetRequiredService<IJobHistoryAppService>();
 
                 if (cycleNumber > 1)
                     await authService.EnsureLoggedInAsync(page);

@@ -35,8 +35,8 @@ services:
     environment:
       - Browser__Headless=true
       - Browser__Channel=chromium
-      - ConnectionStrings__JobHistory=Host=postgres;Database=linkedinbot;Username=linkedinbot;Password=linkedinbot
-      - JobHistory__Provider=postgres
+      - DataConnection__Provider=postgres
+      - DataConnection__ConnectionString=Host=postgres;Database=linkedinbot;Username=linkedinbot;Password=linkedinbot
       - JobSearch__InteractivePrompt=false
 
   # Console service (for local development with interactive prompt)

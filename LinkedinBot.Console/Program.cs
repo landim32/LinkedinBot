@@ -2,7 +2,7 @@ using System.Text.Json;
 using LinkedinBot.Application;
 using LinkedinBot.Domain.Services.Interfaces;
 using LinkedinBot.DTO.Models;
-using LinkedinBot.Infra.Interfaces.Services;
+using LinkedinBot.Infra.Interfaces.AppServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -44,12 +44,12 @@ try
     using var scope = host.Services.CreateScope();
     var provider = scope.ServiceProvider;
 
-    var browserService = provider.GetRequiredService<IBrowserService>();
-    var authService = provider.GetRequiredService<ILinkedInAuthService>();
-    var searchService = provider.GetRequiredService<ILinkedInSearchService>();
-    var applyService = provider.GetRequiredService<ILinkedInApplyService>();
+    var browserService = provider.GetRequiredService<IBrowserAppService>();
+    var authService = provider.GetRequiredService<ILinkedInAuthAppService>();
+    var searchService = provider.GetRequiredService<ILinkedInSearchAppService>();
+    var applyService = provider.GetRequiredService<ILinkedInApplyAppService>();
     var analyzerService = provider.GetRequiredService<IJobAnalyzerService>();
-    var historyService = provider.GetRequiredService<IJobHistoryService>();
+    var historyService = provider.GetRequiredService<IJobHistoryAppService>();
     var settings = provider.GetRequiredService<IOptions<JobSearchSettings>>().Value;
 
     // 1. Initialize browser and load history

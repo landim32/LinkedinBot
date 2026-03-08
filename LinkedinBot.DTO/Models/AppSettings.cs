@@ -28,7 +28,6 @@ public class JobSearchSettings
     public string RemoteFilter { get; set; } = "2";
     public int MaxApplicationsPerRun { get; set; } = 50;
     public int SearchIntervalMinutes { get; set; } = 5;
-    public string HistoryFilePath { get; set; } = "./job-history.json";
     public int SalaryExpectation { get; set; } = 15000;
     public int MaxFormSteps { get; set; } = 20;
     public bool InteractivePrompt { get; set; } = true;
@@ -45,11 +44,13 @@ public class BrowserSettings
     public string Channel { get; set; } = "chrome";
 }
 
-public class JobHistorySettings
+public class DataConnectionSettings
 {
-    public const string SectionName = "JobHistory";
+    public const string SectionName = "DataConnection";
 
-    public string Provider { get; set; } = "json";
+    public string Provider { get; set; } = "sqlite";
+    public string ConnectionString { get; set; } = "Data Source=job-history.db";
+    public string FilePath { get; set; } = string.Empty;
 }
 
 public class ResumeSettings

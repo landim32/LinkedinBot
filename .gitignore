@@ -31,6 +31,9 @@ appsettings.Development.json
 
 ## Job history
 job-history.json
+*.db
+*.db-shm
+*.db-wal
 
 ## Playwright persistent browser data
 user-data/
